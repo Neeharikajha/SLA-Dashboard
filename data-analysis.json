@@ -1,0 +1,217 @@
+{
+  "monitoring_checks_12d_seed505.csv": {
+    "file": "monitoring_checks_12d_seed505.csv",
+    "total_rows": 6230,
+    "timestamp_formats": {
+      "iso_z": 6094,
+      "iso_offset": 43,
+      "epoch": 93
+    },
+    "services": {
+      "svc-payments": 1258,
+      "svc-search": 1242,
+      "svc-auth": 1244,
+      "svc-reports": 1229,
+      "svc-notify": 1257
+    },
+    "agents": {
+      "agent-1": 5770,
+      "agent-2": 460
+    },
+    "regions": {
+      "ap-south-1": 6230
+    },
+    "latency_units": {
+      "ms": 4988,
+      "s": 1242
+    },
+    "status_codes": {
+      "200": 6147,
+      "500": 33,
+      "502": 29,
+      "503": 20,
+      "999": 1
+    },
+    "invalid_status_code_rows": 1,
+    "negative_latency_rows": 1,
+    "missing_latency_on_200": 74,
+    "exact_duplicate_rows": 8,
+    "date_range": [
+      "2025-04-10T00:00:00.000Z",
+      "2025-04-21T23:45:00.000Z"
+    ],
+    "days_span": 12
+  },
+  "monitoring_checks_14d_seed202.csv": {
+    "file": "monitoring_checks_14d_seed202.csv",
+    "total_rows": 7269,
+    "timestamp_formats": {
+      "iso_z": 7110,
+      "epoch": 109,
+      "iso_offset": 50
+    },
+    "services": {
+      "svc-notify": 1455,
+      "svc-search": 1452,
+      "svc-auth": 1444,
+      "svc-payments": 1455,
+      "svc-reports": 1463
+    },
+    "agents": {
+      "agent-1": 6732,
+      "agent-2": 537
+    },
+    "regions": {
+      "ap-south-1": 7269
+    },
+    "latency_units": {
+      "ms": 5817,
+      "s": 1452
+    },
+    "status_codes": {
+      "200": 7158,
+      "500": 39,
+      "502": 30,
+      "503": 41,
+      "999": 1
+    },
+    "invalid_status_code_rows": 1,
+    "negative_latency_rows": 1,
+    "missing_latency_on_200": 83,
+    "exact_duplicate_rows": 10,
+    "date_range": [
+      "2025-05-19T00:00:00.000Z",
+      "2025-06-01T23:45:00.000Z"
+    ],
+    "days_span": 14
+  },
+  "monitoring_checks_21d_seed303.csv": {
+    "file": "monitoring_checks_21d_seed303.csv",
+    "total_rows": 10904,
+    "timestamp_formats": {
+      "iso_z": 10665,
+      "epoch": 163,
+      "iso_offset": 76
+    },
+    "services": {
+      "svc-payments": 2189,
+      "svc-notify": 2180,
+      "svc-reports": 2180,
+      "svc-search": 2184,
+      "svc-auth": 2171
+    },
+    "agents": {
+      "agent-1": 10098,
+      "agent-2": 806
+    },
+    "regions": {
+      "ap-south-1": 10904
+    },
+    "latency_units": {
+      "ms": 8720,
+      "s": 2184
+    },
+    "status_codes": {
+      "200": 10772,
+      "500": 49,
+      "502": 44,
+      "503": 38,
+      "999": 1
+    },
+    "invalid_status_code_rows": 1,
+    "negative_latency_rows": 1,
+    "missing_latency_on_200": 128,
+    "exact_duplicate_rows": 18,
+    "date_range": [
+      "2025-04-03T00:00:00.000Z",
+      "2025-04-23T23:45:00.000Z"
+    ],
+    "days_span": 21
+  },
+  "monitoring_checks_30d_seed404.csv": {
+    "file": "monitoring_checks_30d_seed404.csv",
+    "total_rows": 15577,
+    "timestamp_formats": {
+      "iso_z": 15235,
+      "epoch": 233,
+      "iso_offset": 109
+    },
+    "services": {
+      "svc-auth": 3103,
+      "svc-search": 3131,
+      "svc-payments": 3125,
+      "svc-notify": 3120,
+      "svc-reports": 3098
+    },
+    "agents": {
+      "agent-2": 1153,
+      "agent-1": 14424
+    },
+    "regions": {
+      "ap-south-1": 15577
+    },
+    "latency_units": {
+      "ms": 12446,
+      "s": 3131
+    },
+    "status_codes": {
+      "200": 15384,
+      "500": 59,
+      "502": 69,
+      "503": 64,
+      "999": 1
+    },
+    "invalid_status_code_rows": 1,
+    "negative_latency_rows": 1,
+    "missing_latency_on_200": 186,
+    "exact_duplicate_rows": 24,
+    "date_range": [
+      "2025-04-06T00:00:00.000Z",
+      "2025-05-05T23:45:00.000Z"
+    ],
+    "days_span": 30
+  },
+  "monitoring_checks_9d_seed101.csv": {
+    "file": "monitoring_checks_9d_seed101.csv",
+    "total_rows": 4672,
+    "timestamp_formats": {
+      "iso_z": 4570,
+      "epoch": 70,
+      "iso_offset": 32
+    },
+    "services": {
+      "svc-reports": 929,
+      "svc-search": 935,
+      "svc-payments": 948,
+      "svc-notify": 928,
+      "svc-auth": 932
+    },
+    "agents": {
+      "agent-1": 4327,
+      "agent-2": 345
+    },
+    "regions": {
+      "ap-south-1": 4672
+    },
+    "latency_units": {
+      "ms": 3737,
+      "s": 935
+    },
+    "status_codes": {
+      "200": 4626,
+      "500": 11,
+      "502": 15,
+      "503": 19,
+      "999": 1
+    },
+    "invalid_status_code_rows": 1,
+    "negative_latency_rows": 1,
+    "missing_latency_on_200": 56,
+    "exact_duplicate_rows": 6,
+    "date_range": [
+      "2025-05-08T00:00:00.000Z",
+      "2025-05-16T23:45:00.000Z"
+    ],
+    "days_span": 9
+  }
+}

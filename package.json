@@ -1,0 +1,8 @@
+{
+  "name": "sla-dashboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "analyze": "node scripts/analyze.js"
+  }
+}
