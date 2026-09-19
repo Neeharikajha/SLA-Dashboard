@@ -170,4 +170,60 @@ vercel dev          # /api functions on :3000 (separate terminal)
 - P50/P95/P99 latency, not just averages
 - Real-time alerting when availability crosses a threshold
 - CSV export of filtered logs
+
 # SLA-Dashboard
+
+## Deployment
+
+1. Push to GitHub (done)
+2. Connect repo to Vercel via dashboard
+3. Set environment variables in Vercel:
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_KEY`
+4. Deploy automatically on push
+
+**Live URL:** https://sla-dashboard-neeharika.vercel.app (deploy after setting env vars)
+
+**Last verified:** To be deployed and tested live
+
+## Features implemented
+
+- **Health banner:** Top-level status indicator (green/yellow/red) showing worst service
+- **Availability trends:** Line chart showing uptime per service per day
+- **Latency percentiles:** P50/P95/P99 instead of just averages (reveals tail latency)
+- **CSV export:** Download filtered logs as CSV for billing disputes
+- **Upload history:** See all uploads with success/error status and quality scores
+- **Multi-agent handling:** Per-service stats correctly handle agent-1 and agent-2 coverage
+- **Flexible stats layout:** Collapsible section with overall + per-service breakdowns
+
+## Run locally
+
+```bash
+npm install
+vercel dev
+```
+
+Then visit http://localhost:3000, upload a CSV, and the dashboard populates.
+
+## SQL functions
+
+Run `db/schema.sql` once in Supabase SQL editor:
+
+- `overall_stats()` — total checks, uptime %, latency p50/p95/p99
+- `service_stats()` — per-service breakdown with percentiles
+- `daily_availability_trend()` — daily uptime per service (for charts)
+- `service_latency_percentiles()` — p50/p95/p99 by service
+
+## Assumptions
+
+- **Uptime = 2xx+3xx responses ÷ total checks** (5xx is down, 4xx is client error)
+- **Multi-agent policy:** service is down if _any_ agent reported non-2xx for an interval
+- **Percentile latency:** computed on non-null latency_ms (missing latency excluded)
+- **Dedup key = all fields including agent** (agent-1 and agent-2 are not collapsed)
+
+## What I'd do differently
+
+- Real-time websocket alerts when availability crosses SLA threshold
+- Heatmap of hourly availability by service (more compact than daily trend)
+- Drill-down to individual agent/region latency breakdown
+- Automated SLA credit calculations and audit trail
