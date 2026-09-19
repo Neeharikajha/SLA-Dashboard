@@ -1,0 +1,148 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f6f7f9;
+  color: #1a1a1a;
+}
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+h1 {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+h2 {
+  font-size: 1.1rem;
+  margin: 0 0 12px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e3e5e8;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  display: inline-block;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.msg {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+.msg.ok {
+  color: #1a7a3c;
+}
+.msg.error {
+  color: #b3261e;
+}
+
+.toggle {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 0 8px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.stat {
+  text-align: center;
+  padding: 12px 4px;
+  border-radius: 6px;
+  background: #f6f7f9;
+}
+.stat-value {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 2px;
+}
+
+.range {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0 0 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+th,
+td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid #eee;
+}
+th {
+  color: #666;
+  font-weight: 600;
+}
+
+.green {
+  color: #1a7a3c;
+}
+.yellow {
+  color: #a67c00;
+}
+.red {
+  color: #b3261e;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+.filters label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.filters input,
+.filters select {
+  padding: 4px 6px;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 0.85rem;
+}
+.pager button {
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.pager button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
