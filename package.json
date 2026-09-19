@@ -3,6 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "analyze": "node scripts/analyze.js"
+    "analyze": "node scripts/analyze.js",
+    "test-clean": "node scripts/test-clean.js",
+    "roundtrip": "node --env-file=.env.local scripts/roundtrip.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4"
   }
 }
