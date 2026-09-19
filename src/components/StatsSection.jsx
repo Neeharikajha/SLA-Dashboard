@@ -1,100 +1,71 @@
-import { useState, useEffect } from "react";
-import TrendChart from "./TrendChart";
+import { useEffect, useState } from "react";
 
-export default function StatsSection() {
+const statusClass = (pct) =>
+  pct >= 99.9 ? "green" : pct >= 99 ? "yellow" : "red";
+
+export default function StatsSection({ refreshKey }) {
+  const [open, setOpen] = useState(true);
   const [stats, setStats] = useState(null);
-  const [latencies, setLatencies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [expanded, setExpanded] = useState(true);
 
   useEffect(() => {
-    Promise.all([fetch("/api/stats"), fetch("/api/latency")])
-      .then(([s, l]) => {
-        if (!s.ok || !l.ok) throw new Error("Failed to fetch");
-        return Promise.all([s.json(), l.json()]);
-      })
-      .then(([statsData, latencyData]) => {
-        setStats(statsData);
-        setLatencies(latencyData.latencies || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) return <div className="loading">Loading stats...</div>;
-  if (error) return <div className="error">{error}</div>;
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then(setStats);
+  }, [refreshKey]);
 
   return (
-    <section className="stats-section">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          cursor: "pointer",
-        }}
-        onClick={() => setExpanded(!expanded)}
-      >
-        <h2>Statistics {expanded ? "▼" : "▶"}</h2>
-      </div>
-
-      {expanded && (
+    <section className="card">
+      <button className="toggle" onClick={() => setOpen((o) => !o)}>
+        {open ? "▾" : "▸"} Stats
+      </button>
+      {open && stats?.overall && (
         <>
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="label">Uptime</div>
-              <div className="value">
-                {stats?.uptime_percent?.toFixed(2) ?? 0}%
-              </div>
+          <div className="stat-grid">
+            <div
+              className={`stat ${statusClass(stats.overall.availability_pct)}`}
+            >
+              <span className="stat-value">
+                {stats.overall.availability_pct}%
+              </span>
+              <span className="stat-label">Availability</span>
             </div>
-            <div className="stat-card">
-              <div className="label">Total Checks</div>
-              <div className="value">
-                {stats?.total_intervals?.toLocaleString() ?? 0}
-              </div>
+            <div className="stat">
+              <span className="stat-value">{stats.overall.total_rows}</span>
+              <span className="stat-label">Total checks</span>
             </div>
-            <div className="stat-card">
-              <div className="label">Avg Latency</div>
-              <div className="value">{stats?.avg_response_time ?? 0}ms</div>
+            <div className="stat">
+              <span className="stat-value">{stats.overall.flagged_rows}</span>
+              <span className="stat-label">Flagged rows</span>
             </div>
-            <div className="stat-card">
-              <div className="label">Data Quality</div>
-              <div className="value">
-                {stats?.data_quality_score?.toFixed(2) ?? 0}%
-              </div>
+            <div className="stat">
+              <span className="stat-value">
+                {stats.overall.data_quality_score}%
+              </span>
+              <span className="stat-label">Data quality</span>
             </div>
           </div>
-
-          <h3 style={{ marginTop: "1.5rem", fontSize: "1rem" }}>
-            Availability Trend
-          </h3>
-          <TrendChart />
-
-          <h3 style={{ marginTop: "1.5rem", fontSize: "1rem" }}>
-            Latency by Service (P50/P95/P99)
-          </h3>
-          <table className="logs-table">
+          <p className="range">
+            {stats.overall.min_timestamp?.slice(0, 10)} →{" "}
+            {stats.overall.max_timestamp?.slice(0, 10)}
+          </p>
+          <table>
             <thead>
               <tr>
                 <th>Service</th>
-                <th>P50</th>
-                <th>P95</th>
-                <th>P99</th>
-                <th>Avg</th>
+                <th>Availability</th>
+                <th>Avg latency</th>
+                <th>Intervals</th>
               </tr>
             </thead>
             <tbody>
-              {latencies.map((lat, i) => (
-                <tr key={i}>
-                  <td>{lat.service_name}</td>
-                  <td>{lat.p50_ms}ms</td>
-                  <td>{lat.p95_ms}ms</td>
-                  <td>{lat.p99_ms}ms</td>
-                  <td>{lat.avg_ms}ms</td>
+              {stats.services.map((s) => (
+                <tr key={s.service_id}>
+                  <td>{s.service_name}</td>
+                  <td className={statusClass(s.availability_pct)}>
+                    {s.availability_pct}%
+                  </td>
+                  <td>{s.avg_latency_ms ?? "—"} ms</td>
+                  <td>{s.total_intervals}</td>
                 </tr>
               ))}
             </tbody>

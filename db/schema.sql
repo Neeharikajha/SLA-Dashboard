@@ -56,39 +56,3 @@ returns table (
     (select max(timestamp) from health_checks)
   from intervals;
 $$;
-
--- Daily availability trend (for charts)
-create or replace function daily_availability_trend()
-returns table (
-  date date, service_name text, availability_pct numeric
-) language sql stable as $
-  with daily_intervals as (
-    select 
-      date_trunc('day', timestamp)::date as date,
-      service_id, max(service_name) as service_name, timestamp,
-      bool_and(status_code between 200 and 299) as up
-    from health_checks group by date, service_id, timestamp
-  )
-  select 
-    date, service_name,
-    round(100.0 * count(*) filter (where up) / count(*), 2)
-  from daily_intervals
-  group by date, service_name
-  order by date, service_name;
-$;
-
--- Percentile latency function
-create or replace function service_latency_percentiles()
-returns table (
-  service_name text, p50_ms numeric, p95_ms numeric, p99_ms numeric, avg_ms numeric
-) language sql stable as $
-  select 
-    service_name,
-    round((percentile_cont(0.50) within group (order by latency_ms))::numeric, 1),
-    round((percentile_cont(0.95) within group (order by latency_ms))::numeric, 1),
-    round((percentile_cont(0.99) within group (order by latency_ms))::numeric, 1),
-    round(avg(latency_ms)::numeric, 1)
-  from health_checks
-  where latency_ms is not null
-  group by service_name;
-$;
