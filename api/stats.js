@@ -1,17 +1,21 @@
 import { client } from "../lib/db.js";
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") return res.status(405).json({ error: "GET only" });
+  try {
+    const [overall, services] = await Promise.all([
+      client().rpc("overall_stats"),
+      client().rpc("service_stats"),
+    ]);
 
-  const [overall, services] = await Promise.all([
-    client().rpc("overall_stats"),
-    client().rpc("service_stats"),
-  ]);
-  if (overall.error || services.error) {
-    return res
-      .status(500)
-      .json({ error: (overall.error || services.error).message });
+    if (overall.error || services.error) {
+      throw new Error((overall.error || services.error).message);
+    }
+
+    const stats = overall.data?.[0] || {};
+    stats.services = services.data || [];
+
+    res.json(stats);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  res.status(200).json({ overall: overall.data[0], services: services.data });
 }
