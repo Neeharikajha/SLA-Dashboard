@@ -17,29 +17,42 @@ export default function StatsSection({ refreshKey, filename }) {
 
   const worstService = stats?.services?.reduce(
     (min, s) => (s.availability_pct < min.availability_pct ? s : min),
-    stats.services[0]
+    stats.services[0],
   );
 
   return (
     <section className="card">
       {worstService && (
-        <div style={{
-          padding: '12px',
-          marginBottom: '16px',
-          borderRadius: '6px',
-          background: worstService.availability_pct >= 99.9 ? '#e6f4ea' : worstService.availability_pct >= 99 ? '#fef7e0' : '#fce8e6',
-          border: `1px solid ${worstService.availability_pct >= 99.9 ? '#1a7a3c' : worstService.availability_pct >= 99 ? '#a67c00' : '#b3261e'}`,
-        }}>
-          <strong style={{ marginRight: '8px' }}>System Status:</strong> 
+        <div
+          style={{
+            padding: "12px",
+            marginBottom: "16px",
+            borderRadius: "6px",
+            background:
+              worstService.availability_pct >= 99.9
+                ? "#ecfdf5"
+                : worstService.availability_pct >= 99
+                  ? "#fffbeb"
+                  : "#fef2f2",
+            border: `1px solid ${
+              worstService.availability_pct >= 99.9
+                ? "#15803d"
+                : worstService.availability_pct >= 99
+                  ? "#b45309"
+                  : "#b91c1c"
+            }`,
+          }}
+        >
+          <strong style={{ marginRight: "8px" }}>System Status:</strong>
           <span className={statusClass(worstService.availability_pct)}>
-            {worstService.availability_pct >= 99.9 
-              ? 'All services operational' 
+            {worstService.availability_pct >= 99.9
+              ? "All services operational"
               : `${worstService.service_name} needs attention (${worstService.availability_pct}% availability)`}
           </span>
         </div>
       )}
       <button className="toggle" onClick={() => setOpen((o) => !o)}>
-        {open ? "▾" : "▸"} Stats
+        Stats
       </button>
       {open && stats?.overall && (
         <>

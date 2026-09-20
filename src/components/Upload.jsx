@@ -7,7 +7,12 @@ export default function Upload({ onUploaded }) {
   const [fileProgress, setFileProgress] = useState({});
 
   async function handleClear() {
-    if (!confirm("Are you sure you want to clear all data? This cannot be undone.")) return;
+    if (
+      !confirm(
+        "Are you sure you want to clear all data? This cannot be undone.",
+      )
+    )
+      return;
     setClearing(true);
     try {
       const res = await fetch("/api/clear", { method: "POST" });
@@ -41,21 +46,35 @@ export default function Upload({ onUploaded }) {
         files.map(async (file) => {
           try {
             const startTime = Date.now();
-            setFileProgress(p => ({ ...p, [file.name]: { status: "uploading" } }));
-            
-            console.log(`[Upload] processing file: ${file.name}, size: ${file.size}`);
+            setFileProgress((p) => ({
+              ...p,
+              [file.name]: { status: "uploading" },
+            }));
+
+            console.log(
+              `[Upload] processing file: ${file.name}, size: ${file.size}`,
+            );
             const text = await file.text();
-            const res = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
-              method: "POST",
-              headers: { "Content-Type": "text/plain" },
-              body: text,
-            });
-            
+            const res = await fetch(
+              `/api/upload?filename=${encodeURIComponent(file.name)}`,
+              {
+                method: "POST",
+                headers: { "Content-Type": "text/plain" },
+                body: text,
+              },
+            );
+
             const json = await res.json();
-            if (!res.ok) throw new Error(file.name + ": " + (json.error || "HTTP " + res.status));
-            
+            if (!res.ok)
+              throw new Error(
+                file.name + ": " + (json.error || "HTTP " + res.status),
+              );
+
             const elapsed = Date.now() - startTime;
-            setFileProgress(p => ({ ...p, [file.name]: { status: "done", time: elapsed } }));
+            setFileProgress((p) => ({
+              ...p,
+              [file.name]: { status: "done", time: elapsed },
+            }));
 
             totalValid += json.valid_rows;
             totalOriginal += json.original_rows;
@@ -63,13 +82,17 @@ export default function Upload({ onUploaded }) {
             qualityScores.push(json.data_quality_score);
             if (json.warning) warnings.push(json.warning);
           } catch (e) {
-            setFileProgress(p => ({ ...p, [file.name]: { status: "error", error: e.message } }));
+            setFileProgress((p) => ({
+              ...p,
+              [file.name]: { status: "error", error: e.message },
+            }));
             throw e;
           }
-        })
+        }),
       );
 
-      const avgQuality = qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length;
+      const avgQuality =
+        qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length;
       const uniqueWarnings = [...new Set(warnings)];
 
       setResult({
@@ -91,8 +114,8 @@ export default function Upload({ onUploaded }) {
 
   return (
     <section className="card upload">
-      <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: Object.keys(fileProgress).length ? '16px' : '0' }}>
-        <label className="btn">
+      <div className="flex gap-3 items-center mb-4">
+        <label className="btn-primary">
           {busy ? "Processing…" : "Upload CSV"}
           <input
             type="file"
@@ -103,21 +126,64 @@ export default function Upload({ onUploaded }) {
             hidden
           />
         </label>
-        <button className="btn" onClick={handleClear} disabled={busy || clearing} style={{ background: '#b3261e' }}>
+        <button
+          className="btn"
+          style={{ background: "#dc2626" }}
+          onClick={handleClear}
+          disabled={busy || clearing}
+        >
           {clearing ? "Clearing..." : "Reset Database"}
         </button>
       </div>
 
       {Object.entries(fileProgress).length > 0 && (
-        <div style={{ marginBottom: '16px', fontSize: '0.85rem' }}>
-          <strong style={{ display: 'block', marginBottom: '8px' }}>Upload Progress:</strong>
+        <div style={{ marginBottom: "16px", fontSize: "0.875rem" }}>
+          <strong style={{ display: "block", marginBottom: "8px" }}>
+            Upload Progress:
+          </strong>
           {Object.entries(fileProgress).map(([fname, info]) => (
-            <div key={fname} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid #eee' }}>
-              <span>{fname}</span>
+            <div
+              key={fname}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "4px 0",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <span style={{ color: "black" }}>{fname}</span>
               <span>
-                {info.status === "uploading" && <span style={{ color: '#a67c00' }}>⏳ Uploading...</span>}
-                {info.status === "done" && <span style={{ color: '#1a7a3c' }}>✅ Done ({info.time}ms)</span>}
-                {info.status === "error" && <span style={{ color: '#b3261e' }}>❌ Failed</span>}
+                {info.status === "uploading" && (
+                  <div
+                    style={{
+                      display: "inline-block",
+                      width: "60px",
+                      height: "4px",
+                      background: "#e5e7eb",
+                      borderRadius: "2px",
+                      overflow: "hidden",
+                      verticalAlign: "middle",
+                      marginLeft: "8px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        width: "30%",
+                        background: "#1e3a8a",
+                        animation: "slide 1.5s infinite",
+                      }}
+                    ></div>
+                  </div>
+                )}
+                {info.status === "done" && (
+                  <span style={{ color: "#15803d" }}>
+                    ✓ Done ({info.time}ms)
+                  </span>
+                )}
+                {info.status === "error" && (
+                  <span style={{ color: "#b91c1c" }}>✗ Failed</span>
+                )}
               </span>
             </div>
           ))}
@@ -132,7 +198,14 @@ export default function Upload({ onUploaded }) {
             {result.dropped_rows} dropped · quality{" "}
             {Math.round(result.data_quality_score * 100)}%
           </p>
-          {result.warning && <p className="msg error" style={{marginTop: "8px", fontWeight: "bold"}}>{result.warning}</p>}
+          {result.warning && (
+            <p
+              className="msg error"
+              style={{ marginTop: "8px", fontWeight: "bold" }}
+            >
+              {result.warning}
+            </p>
+          )}
         </div>
       )}
     </section>

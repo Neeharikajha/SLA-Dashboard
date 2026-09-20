@@ -1,29 +1,38 @@
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f6f7f9;
-  color: #1a1a1a;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: white;
+  color: black;
 }
+
 main {
   max-width: 960px;
   margin: 0 auto;
   padding: 24px 16px 64px;
 }
+
 h1 {
   font-size: 1.5rem;
   margin-bottom: 16px;
+  font-weight: bold;
 }
+
 h2 {
   font-size: 1.1rem;
   margin: 0 0 12px;
+  font-weight: 600;
 }
 
 .card {
-  background: #fff;
-  border: 1px solid #e3e5e8;
+  background: white;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
@@ -31,22 +40,48 @@ h2 {
 
 .btn {
   display: inline-block;
-  background: #1a1a1a;
-  color: #fff;
+  background: black;
+  color: white;
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
+  border: none;
+  font-weight: 500;
+  transition: background 0.2s;
 }
+
+.btn:hover {
+  background: #333;
+}
+
+.btn-primary {
+  background: #1e3a8a;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border: none;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background: #1e40af;
+}
+
 .msg {
   margin-top: 10px;
   font-size: 0.9rem;
 }
+
 .msg.ok {
-  color: #1a7a3c;
+  color: #15803d;
 }
+
 .msg.error {
-  color: #b3261e;
+  color: #b91c1c;
 }
 
 .toggle {
@@ -56,6 +91,12 @@ h2 {
   font-weight: 600;
   cursor: pointer;
   padding: 0 0 8px;
+  color: black;
+  transition: color 0.2s;
+}
+
+.toggle:hover {
+  color: #1e3a8a;
 }
 
 .stat-grid {
@@ -64,26 +105,29 @@ h2 {
   gap: 12px;
   margin-bottom: 8px;
 }
+
 .stat {
   text-align: center;
   padding: 12px 4px;
   border-radius: 6px;
-  background: #f6f7f9;
+  background: #f3f4f6;
 }
+
 .stat-value {
   display: block;
   font-size: 1.4rem;
   font-weight: 700;
 }
+
 .stat-label {
   display: block;
   font-size: 0.75rem;
-  color: #666;
+  color: #4b5563;
   margin-top: 2px;
 }
 
 .range {
-  color: #666;
+  color: #4b5563;
   font-size: 0.85rem;
   margin: 0 0 12px;
 }
@@ -93,25 +137,32 @@ table {
   border-collapse: collapse;
   font-size: 0.85rem;
 }
+
 th,
 td {
   text-align: left;
   padding: 6px 8px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e5e7eb;
 }
+
 th {
-  color: #666;
+  color: #4b5563;
   font-weight: 600;
 }
 
 .green {
-  color: #1a7a3c;
+  color: #15803d;
+  font-weight: 600;
 }
+
 .yellow {
-  color: #a67c00;
+  color: #b45309;
+  font-weight: 600;
 }
+
 .red {
-  color: #b3261e;
+  color: #b91c1c;
+  font-weight: 600;
 }
 
 .filters {
@@ -120,15 +171,35 @@ th {
   flex-wrap: wrap;
   margin-bottom: 12px;
   font-size: 0.85rem;
+  align-items: center;
 }
+
 .filters label {
   display: flex;
   align-items: center;
   gap: 4px;
+  font-weight: 500;
 }
+
 .filters input,
 .filters select {
-  padding: 4px 6px;
+  padding: 8px 12px;
+  margin-right: 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  color: black;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.1);
 }
 
 .pager {
@@ -138,11 +209,86 @@ th {
   margin-top: 12px;
   font-size: 0.85rem;
 }
+
 .pager button {
   padding: 4px 10px;
   cursor: pointer;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background 0.2s;
 }
+
+.pager button:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+
 .pager button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.flex {
+  display: flex;
+}
+
+.gap-3 {
+  gap: 12px;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.btn:hover:not(:disabled) {
+  background: #333;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1e40af;
+}
+
+.text-black {
+  color: black;
+}
+
+.block {
+  display: block;
+}
+
+.mb-2 {
+  margin-bottom: 8px;
+}
+
+.mr-2 {
+  margin-right: 8px;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(300%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }

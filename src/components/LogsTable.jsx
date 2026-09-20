@@ -14,6 +14,7 @@ export default function LogsTable({ refreshKey, filename }) {
     service_id: "",
     status: "",
     page: 1,
+    sortLatency: "low",
   });
   const [data, setData] = useState({ rows: [], total: 0 });
 
@@ -25,7 +26,17 @@ export default function LogsTable({ refreshKey, filename }) {
     );
     fetch(`/api/logs?${params}`)
       .then((r) => r.json())
-      .then(setData);
+      .then((result) => {
+        // Sort by latency
+        const sorted = [...result.rows].sort((a, b) => {
+          const aLatency = a.latency_ms ?? Infinity;
+          const bLatency = b.latency_ms ?? Infinity;
+          return filters.sortLatency === "low"
+            ? aLatency - bLatency
+            : bLatency - aLatency;
+        });
+        setData({ ...result, rows: sorted });
+      });
   }, [filters, filename, refreshKey]);
 
   const set = (key) => (e) =>
@@ -35,14 +46,17 @@ export default function LogsTable({ refreshKey, filename }) {
   const downloadCsv = () => {
     if (!data.rows.length) return;
     const header = "Time (UTC),Service,Agent,Status,Latency,Flag\n";
-    const csv = data.rows.map(r => 
-      `${r.timestamp.replace("T", " ").slice(0, 19)},${r.service_name},${r.agent},${r.status_code},${r.latency_ms ?? ""},${r.data_quality_flag ?? ""}`
-    ).join("\n");
-    const blob = new Blob([header + csv], { type: 'text/csv' });
+    const csv = data.rows
+      .map(
+        (r) =>
+          `${r.timestamp.replace("T", " ").slice(0, 19)},${r.service_name},${r.agent},${r.status_code},${r.latency_ms ?? ""},${r.data_quality_flag ?? ""}`,
+      )
+      .join("\n");
+    const blob = new Blob([header + csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `logs-${new Date().toISOString().slice(0,10)}.csv`;
+    a.download = `logs-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
   };
 
@@ -63,7 +77,15 @@ export default function LogsTable({ refreshKey, filename }) {
           <option value="success">2xx</option>
           <option value="fail">Non-2xx</option>
         </select>
-        <button className="btn" onClick={downloadCsv} disabled={!data.rows.length} style={{ marginLeft: 'auto' }}>
+        <select value={filters.sortLatency} onChange={set("sortLatency")}>
+          <option value="low">Latency: Low to High</option>
+          <option value="high">Latency: High to Low</option>
+        </select>
+        <button
+          className="btn ml-auto"
+          onClick={downloadCsv}
+          disabled={!data.rows.length}
+        >
           Download CSV
         </button>
       </div>
@@ -101,7 +123,7 @@ export default function LogsTable({ refreshKey, filename }) {
           Prev
         </button>
         <span>
-          Page {filters.page} · {data.total} rows
+          Page {filters.page} of {Math.ceil(data.total / LIMIT)}
         </span>
         <button
           disabled={filters.page * LIMIT >= data.total}
