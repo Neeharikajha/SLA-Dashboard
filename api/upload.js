@@ -32,7 +32,8 @@ export default async function handler(req, res) {
 
       let rows, summary;
       try {
-        ({ rows, summary } = cleanCsv(body));
+        const { filename } = req.query;
+        ({ rows, summary } = cleanCsv(body, filename));
         console.log(
           `[upload] cleaned ${rows.length} rows from ${body.split("\n").length - 1} lines`,
         );
@@ -48,6 +49,19 @@ export default async function handler(req, res) {
         console.log(`[upload] inserted ${rows.length} rows`);
         res.status(200).json(summary);
       } catch (err) {
+        if (err.message?.includes("'filename' column")) {
+          console.log(`[upload] DB schema outdated, retrying without filename...`);
+          const fallbackRows = rows.map(({ filename, ...rest }) => rest);
+          try {
+            await insertRows(fallbackRows);
+            console.log(`[upload] inserted ${fallbackRows.length} rows (fallback)`);
+            summary.warning = "Database schema is outdated. Run schema.sql in Supabase to enable CSV filtering.";
+            res.status(200).json(summary);
+            return;
+          } catch (e2) {
+            err = e2;
+          }
+        }
         console.log(`[upload] insert error:`, err.message);
         res
           .status(500)

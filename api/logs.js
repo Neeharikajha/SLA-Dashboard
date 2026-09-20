@@ -11,7 +11,7 @@ function nextDay(dateStr) {
 export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ error: "GET only" });
 
-  const { from, to, service_id, status, page = "1" } = req.query;
+  const { filename, service_id, status, page = "1" } = req.query;
   const offset = (Number(page) - 1) * LIMIT;
 
   let q = client()
@@ -19,11 +19,8 @@ export default async function handler(req, res) {
     .select("*", { count: "exact" })
     .order("timestamp", { ascending: false });
 
-  if (from) {
-    // no `to` = single-day filter; with `to`, the whole end day is included
-    q = q
-      .gte("timestamp", `${from}T00:00:00Z`)
-      .lt("timestamp", `${nextDay(to || from)}T00:00:00Z`);
+  if (filename) {
+    q = q.eq("filename", filename);
   }
   if (service_id) q = q.eq("service_id", service_id);
   if (status === "success")

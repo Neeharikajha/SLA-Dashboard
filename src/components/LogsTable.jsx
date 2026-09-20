@@ -9,10 +9,8 @@ const SERVICES = [
 ];
 const LIMIT = 50;
 
-export default function LogsTable({ refreshKey }) {
+export default function LogsTable({ refreshKey, filename }) {
   const [filters, setFilters] = useState({
-    from: "",
-    to: "",
     service_id: "",
     status: "",
     page: 1,
@@ -20,34 +18,38 @@ export default function LogsTable({ refreshKey }) {
   const [data, setData] = useState({ rows: [], total: 0 });
 
   useEffect(() => {
+    const activeFilters = { ...filters };
+    if (filename) activeFilters.filename = filename;
     const params = new URLSearchParams(
-      Object.entries(filters).filter(([, v]) => v),
+      Object.entries(activeFilters).filter(([, v]) => v),
     );
     fetch(`/api/logs?${params}`)
       .then((r) => r.json())
       .then(setData);
-  }, [filters, refreshKey]);
+  }, [filters, filename, refreshKey]);
 
   const set = (key) => (e) =>
     setFilters((f) => ({ ...f, [key]: e.target.value, page: 1 }));
   const setPage = (page) => setFilters((f) => ({ ...f, page }));
 
+  const downloadCsv = () => {
+    if (!data.rows.length) return;
+    const header = "Time (UTC),Service,Agent,Status,Latency,Flag\n";
+    const csv = data.rows.map(r => 
+      `${r.timestamp.replace("T", " ").slice(0, 19)},${r.service_name},${r.agent},${r.status_code},${r.latency_ms ?? ""},${r.data_quality_flag ?? ""}`
+    ).join("\n");
+    const blob = new Blob([header + csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `logs-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  };
+
   return (
     <section className="card">
       <h2>Logs</h2>
       <div className="filters">
-        <label>
-          From <input type="date" value={filters.from} onChange={set("from")} />
-        </label>
-        <label>
-          To{" "}
-          <input
-            type="date"
-            value={filters.to}
-            onChange={set("to")}
-            disabled={!filters.from}
-          />
-        </label>
         <select value={filters.service_id} onChange={set("service_id")}>
           <option value="">All services</option>
           {SERVICES.map((s) => (
@@ -61,6 +63,9 @@ export default function LogsTable({ refreshKey }) {
           <option value="success">2xx</option>
           <option value="fail">Non-2xx</option>
         </select>
+        <button className="btn" onClick={downloadCsv} disabled={!data.rows.length} style={{ marginLeft: 'auto' }}>
+          Download CSV
+        </button>
       </div>
       <table>
         <thead>
